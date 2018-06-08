@@ -2,6 +2,7 @@
 
 import requests
 from ConfigParser import SafeConfigParser
+from bs4 import BeautifulSoup
 
 config = SafeConfigParser()
 config.read('config.ini')
@@ -9,6 +10,7 @@ config.read('config.ini')
 
 class Crowler(object):
     def __init__(self):
+        self.domain_url = config.get("doda", "domain_url")
         self.session = requests.session()
         self.login()
 
@@ -16,7 +18,7 @@ class Crowler(object):
         section = "login"
         user = config.get(section, "user")
         password = config.get(section, "password")
-        login_url = config.get(section, "url")
+        login_url = self.domain_url + config.get(section, "path")
         payload = {
                 "mailAddress": user,
                 "password": password,
@@ -25,14 +27,32 @@ class Crowler(object):
                 }
         self.post(login_url, payload)
 
+    def fetch_job_list(self):
+        section = "referredJobList"
+        url = self.domain_url + config.get(section, "path")
+        html = self.get(url)
+
+        # 詳細のURLを取得
+        bs = BeautifulSoup(html, "html.parser")
+        res = bs.find_all("a", class_="btnList02")
+        for r in res:
+            print self.domain_url + r.get("href")
+
     def post(self, url, payload):
         res = self.session.post(url, data=payload)
         res.raise_for_status()
-        print res.text
+        return res.text
+
+    def get(self, url):
+        res = self.session.get(url)
+        res.raise_for_status()
+        return res.text
 
 
 def main():
-    Crowler()
+    c = Crowler()
+    c.fetch_job_list()
 
 
-main()
+if __name__ == "__main__":
+    main()
