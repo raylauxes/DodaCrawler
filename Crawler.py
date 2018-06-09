@@ -15,6 +15,9 @@ class Crowler(object):
         self.login()
 
     def login(self):
+        """
+        DODAにログインします
+        """
         section = "login"
         user = config.get(section, "user")
         password = config.get(section, "password")
@@ -28,6 +31,9 @@ class Crowler(object):
         self.post(login_url, payload)
 
     def fetch_job_list(self):
+        """
+        キャリアアドバイザーから紹介される求人の詳細を取得
+        """
         section = "referredJobList"
         url = self.domain_url + config.get(section, "path")
         html = self.get(url)
