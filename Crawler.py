@@ -36,13 +36,30 @@ class Crowler(object):
         """
         section = "referredJobList"
         url = self.domain_url + config.get(section, "path")
-        html = self.get(url)
 
-        # 詳細のURLを取得
-        bs = BeautifulSoup(html, "html.parser")
-        res = bs.find_all("a", class_="btnList02")
-        for r in res:
-            print self.domain_url + r.get("href")
+        job_urls = []
+
+        # 次ページが存在する分求人URLを取得する
+        while True:
+            job_list_html = self.get(url)
+
+            # 詳細のURLを取得
+            bs = BeautifulSoup(job_list_html, "html.parser")
+            res = bs.find_all("a", class_="btnList02")
+
+            for r in res:
+                job_urls.append(self.domain_url + r.get("href"))
+
+            # 次ページの存在判定
+            next_page = bs.find("li", class_="btn_r last")
+            next_page = next_page.find("a")
+            if next_page is None:
+                break
+
+            url = self.domain_url + next_page.get("href")
+
+        for detail_url in job_urls:
+            print detail_url
 
     def post(self, url, payload):
         res = self.session.post(url, data=payload)
