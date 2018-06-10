@@ -58,8 +58,13 @@ class Crowler(object):
 
             url = self.domain_url + next_page.get("href")
 
+        # 求人ページのHTML出力する
+        output_path = config.get("output", "path")
         for detail_url in job_urls:
-            print detail_url
+            page = self.get(detail_url)
+
+            with open(output_path + "/" + detail_url.split("=")[-2], "a") as f:
+                f.write(page.encode("utf-8"))
 
     def post(self, url, payload):
         res = self.session.post(url, data=payload)
