@@ -9,6 +9,7 @@ DodaCrawler
 ## 使い方
 1. config.iniのuser、passwordを入力する
 1. 下記を実行する
+1. jobフォルダに求人ページを出力する
 ```
 python Crawler.py
 ```
