@@ -35,7 +35,9 @@ class Crowler(object):
         output_path = config.get("output", "path")
         files = os.listdir(output_path)
         for file_name in files:
-            os.remove(output_path + "/" + file_name)
+            # ドットファイルは無視する
+            if file_name[0] != ".":
+                os.remove(output_path + "/" + file_name)
 
     def fetch_job_list(self):
         """
