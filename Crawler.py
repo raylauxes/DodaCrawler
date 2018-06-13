@@ -1,5 +1,6 @@
 # coding: utf-8
 
+import os
 import requests
 from ConfigParser import SafeConfigParser
 from bs4 import BeautifulSoup
@@ -29,6 +30,12 @@ class Crowler(object):
                 "autoLogin": "checked"
                 }
         self.post(login_url, payload)
+
+    def remove_job_list(self):
+        output_path = config.get("output", "path")
+        files = os.listdir(output_path)
+        for file_name in files:
+            os.remove(output_path + "/" + file_name)
 
     def fetch_job_list(self):
         """
@@ -79,6 +86,7 @@ class Crowler(object):
 
 def main():
     c = Crowler()
+    c.remove_job_list()
     c.fetch_job_list()
 
 
