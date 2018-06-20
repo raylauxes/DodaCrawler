@@ -20,10 +20,23 @@ class DodaDB(object):
             c = con.cursor()
             c.execute(sql)
 
+    def is_exist_table(self):
+        """
+        会社情報テーブルが存在するかチェックする
+        """
+        with sqlite.connect(self.name) as con:
+            sql = config.get("db", "sql_exist")
+            c = con.cursor()
+            # 結果集合の1件だけ取り出す
+            res = c.execute(sql).fetchone()[0]
+
+        return res
+
 
 def main():
     db = DodaDB(config.get("db", "name"))
-    db.create_company_table()
+    if not db.is_exist_table():
+        db.create_company_table()
 
 
 if __name__ == "__main__":
