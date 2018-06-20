@@ -32,11 +32,21 @@ class DodaDB(object):
 
         return res
 
+    def delete_company_row(self):
+        """
+        会社情報テーブルの行を全削除する
+        """
+        with sqlite.connect(self.name) as con:
+            sql = config.get("db", "sql_delete")
+            c = con.cursor()
+            c.execute(sql)
+
 
 def main():
     db = DodaDB(config.get("db", "name"))
     if not db.is_exist_table():
         db.create_company_table()
+    db.delete_company_row()
 
 
 if __name__ == "__main__":
