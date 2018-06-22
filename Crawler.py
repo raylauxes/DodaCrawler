@@ -29,7 +29,15 @@ class Crowler(object):
                 "doLogin": u"同意してログイン",
                 "autoLogin": "checked"
                 }
-        self.post(login_url, payload)
+        res = self.post(login_url, payload)
+
+        # ログインの成否を判定
+        bs = BeautifulSoup(res, "html.parser")
+        fail_title = config.get(section, "fail").decode("utf-8")
+        if bs.find("title").text == fail_title:
+            print (u"ログインに失敗しました。config.iniのuser, passwordを確認してください。")
+            raise Exception
+        return
 
     def remove_job_list(self):
         output_path = config.get("output", "path")
