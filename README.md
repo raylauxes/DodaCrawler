@@ -3,6 +3,7 @@ DodaCrawler
 
 ## 実行環境
 - Python 2.7
+- sqlite3 3.8.10
 - requests 2.18.4
 - bs4 0.0.1
 
